@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/brain.svg" alt="Paolo Solis — Neural Architecture" width="100%" />
+<img src="brain.svg" alt="Paolo Solis — Neural Architecture" width="100%" />
 
 <br/>
 
@@ -21,7 +21,7 @@
 ## `> boot paolo.sys`
 
 <div align="center">
-  <img src="assets/terminal.svg" alt="Boot log" width="100%" />
+  <img src="terminal.svg" alt="Boot log" width="100%" />
 </div>
 
 ---
