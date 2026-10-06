@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Paolo Solis · Neural Architecture</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;color:#cfeaff;
+  background:radial-gradient(ellipse at 50% 46%,#0b1829 0%,#070c15 48%,#04060b 100%);
+  font-family:"JetBrains Mono","Fira Code",ui-monospace,Menlo,Consolas,monospace}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.top{position:fixed;top:22px;left:26px;pointer-events:none}
+.top h1{margin:0;font-size:clamp(18px,2.4vw,28px);letter-spacing:.22em;font-weight:700;color:#fff;text-shadow:0 0 18px rgba(0,245,212,.45)}
+.top p{margin:6px 0 0;font-size:clamp(10px,1.1vw,13px);letter-spacing:.14em;color:#7fd8ff;opacity:.85}
+.btns{position:fixed;top:20px;right:22px;display:flex;gap:8px}
+button{font:inherit;font-size:12px;letter-spacing:.12em;color:#00f5d4;background:rgba(0,245,212,.07);
+  border:1px solid rgba(0,245,212,.4);padding:9px 14px;border-radius:8px;cursor:pointer;transition:.2s}
+button:hover{background:rgba(0,245,212,.18);box-shadow:0 0 18px rgba(0,245,212,.35)}
+.hud{position:fixed;left:0;right:0;bottom:22px;text-align:center;font-size:11px;letter-spacing:.16em;color:#6fb7d6;opacity:.8;pointer-events:none;padding:0 12px}
+.stat{position:fixed;left:26px;bottom:48px;font-size:11px;letter-spacing:.12em;color:#4fa6c8;pointer-events:none;line-height:1.7;white-space:pre}
+@media (max-width:640px){.stat{display:none}.btns{top:auto;bottom:52px;right:50%;transform:translateX(50%)}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="top"><h1>PAOLO SOLIS</h1><p>NEURAL ARCHITECTURE · SOFTWARE ENGINEER</p></div>
+<div class="btns"><button id="tog">◉ VER GALAXIA</button></div>
+<div class="stat" id="stat"></div>
+<div class="hud">MUEVE EL MOUSE · CLIC PARA DISPARAR IMPULSOS · TECLA G = GALAXIA / CEREBRO</div>
+
+<script>
+(()=>{
+'use strict';
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const statEl=document.getElementById('stat'),tog=document.getElementById('tog');
+let W=0,H=0,DPR=1,S=1,CX=0,CY=0;
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=innerWidth;H=innerHeight;
+  cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  S=Math.min(W*0.30,H*0.40);CX=W/2;CY=H/2;
+}
+addEventListener('resize',resize);resize();
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd=mulberry32(0x5eed2026);
+
+const N=3400,NN=780;
+const bx=new Float32Array(N),by=new Float32Array(N),bz=new Float32Array(N);
+const gx=new Float32Array(N),gy=new Float32Array(N),gz=new Float32Array(N);
+const dl=new Float32Array(N),sz=new Float32Array(N),ph=new Float32Array(N);
+const cls=new Uint8Array(N);
+const ox=new Float32Array(N),oy=new Float32Array(N),vx=new Float32Array(N),vy=new Float32Array(N);
+const sx=new Float32Array(N),sy=new Float32Array(N),sd=new Float32Array(N),pp=new Float32Array(N);
+const act=new Float32Array(NN);
+
+function brainPoint(shell){
+  const r=rnd();let x,y,z;
+  if(r<0.84){
+    const s=rnd()<0.5?-1:1;
+    const u=rnd()*2-1,th=rnd()*6.2832,q=Math.sqrt(1-u*u);
+    const dx=q*Math.cos(th),dy=u,dz=q*Math.sin(th);
+    const rad=rnd()<shell?1:Math.cbrt(rnd());
+    const f=1+0.055*Math.sin(9*dx+4*dy+1.3)*Math.sin(7*dz+2.4*dx)+0.03*Math.sin(15*dz+5*dy);
+    x=s*0.55+dx*0.56*rad*f;
+    y=0.08+dy*0.68*rad*f;
+    z=dz*1.22*rad*f;
+    if(s*x<0.03)return brainPoint(shell);
+    if(y<-0.25)y=-0.25+(y+0.25)*0.4;
+    if(z>0)x*=1-0.1*(z/1.2);
+  }else if(r<0.96){
+    const u=rnd()*2-1,th=rnd()*6.2832,q=Math.sqrt(1-u*u);
+    const rad=rnd()<shell?1:Math.cbrt(rnd());
+    const ridge=1+0.07*Math.sin(26*u);
+    x=q*Math.cos(th)*0.6*rad*ridge;
+    y=-0.55+u*0.26*rad;
+    z=-0.82+q*Math.sin(th)*0.42*rad*ridge;
+  }else{
+    const th=rnd()*6.2832,t=rnd(),rr=0.12*(1-0.25*t);
+    y=-0.4-t*0.7;x=Math.cos(th)*rr;z=-0.2-t*0.28+Math.sin(th)*rr;
+  }
+  return [x,y+0.12,z];
+}
+function galaxyPoint(){
+  let x,y,z;
+  if(rnd()<0.22){
+    const r=Math.pow(rnd(),2)*0.32,th=rnd()*6.2832,u=rnd()*2-1,q=Math.sqrt(1-u*u);
+    x=r*q*Math.cos(th);z=r*q*Math.sin(th);y=r*u*0.6;
+  }else{
+    const arm=(rnd()*3)|0,r=0.12+Math.pow(rnd(),0.75)*1.15;
+    const a=r*3.2+arm*2.0944+(rnd()+rnd()+rnd()-1.5)*(0.12+r*0.1);
+    x=Math.cos(a)*r;z=Math.sin(a)*r;y=(rnd()-0.5)*0.06*(1.4-r*0.5);
+  }
+  return [x,y,z];
+}
+for(let i=0;i<N;i++){
+  const b=brainPoint(i<NN?0.9:0.55);bx[i]=b[0];by[i]=b[1];bz[i]=b[2];
+  const g=galaxyPoint();gx[i]=g[0];gy[i]=g[1];gz[i]=g[2];
+  dl[i]=rnd();sz[i]=rnd();ph[i]=rnd()*6.2832;
+  const c=rnd();cls[i]=c<0.38?0:c<0.66?1:c<0.92?2:3;
+}
+
+/* sinapsis: vecinos más cercanos entre las neuronas */
+const eaL=[],ebL=[],seen=new Set(),adj=Array.from({length:NN},()=>[]);
+for(let i=0;i<NN;i++){
+  const c=[];
+  for(let j=0;j<NN;j++){
+    if(i===j)continue;
+    const dx=bx[i]-bx[j],dy=by[i]-by[j],dz=bz[i]-bz[j],d=dx*dx+dy*dy+dz*dz;
+    if(d<0.0625)c.push([d,j]);
+  }
+  c.sort((a,b)=>a[0]-b[0]);
+  for(let k=0;k<Math.min(3,c.length);k++){
+    const j=c[k][1],key=i<j?i*4096+j:j*4096+i;
+    if(!seen.has(key)){seen.add(key);adj[i].push(eaL.length);adj[j].push(eaL.length);eaL.push(i);ebL.push(j);}
+  }
+}
+const ea=Int32Array.from(eaL),eb=Int32Array.from(ebL),NE=ea.length;
+
+function mkSprite(r,g,b){
+  const s=document.createElement('canvas');s.width=s.height=64;
+  const c=s.getContext('2d'),gr=c.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,255,255,1)');
+  gr.addColorStop(0.16,`rgba(${r},${g},${b},.85)`);
+  gr.addColorStop(0.5,`rgba(${r},${g},${b},.18)`);
+  gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
+  c.fillStyle=gr;c.fillRect(0,0,64,64);return s;
+}
+const spr=[mkSprite(150,225,255),mkSprite(0,245,212),mkSprite(61,139,255),mkSprite(255,180,130)];
+const sprW=mkSprite(220,255,250);
+
+let m=0,mt=0,mx=-9999,my=-9999,mActive=false;
+const pulses=[],ripples=[];
+const R=130;
+
+function setLabel(){tog.textContent=mt>0.5?'◉ VER GALAXIA':'◉ VER CEREBRO';}
+function toggle(){mt=mt>0.5?0:1;setLabel();}
+tog.addEventListener('click',toggle);
+setTimeout(()=>{mt=1;setLabel();},1100);
+
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;mActive=true;});
+document.addEventListener('pointerleave',()=>{mx=my=-9999;mActive=false;});
+addEventListener('pointerdown',e=>{
+  if(e.target.closest&&e.target.closest('button'))return;
+  mx=e.clientX;my=e.clientY;mActive=true;burst(mx,my);
+});
+addEventListener('keydown',e=>{if(e.key==='g'||e.key==='G')toggle();});
+
+function burst(x,y){
+  ripples.push({x,y,r:0,a:1});
+  for(let i=0;i<N;i++){
+    const dx=sx[i]-x,dy=sy[i]-y,d=Math.hypot(dx,dy);
+    if(d<240){
+      const f=1-d/240;
+      vx[i]+=dx/(d+1)*f*14;vy[i]+=dy/(d+1)*f*14;
+      if(i<NN&&d<170)act[i]=1;
+    }
+  }
+}
+function spawn(i,en){
+  const a=adj[i];
+  if(!a.length||pulses.length>360)return;
+  pulses.push({e:a[(rnd()*a.length)|0],from:i,t:0,en,sp:1.4+rnd()*1.2});
+}
+
+let last=performance.now(),yaw=0.6,tmx=0,tmy=0,ambient=0,statT=0;
+
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;const t=now/1000;
+  m+=(mt-m)*(1-Math.exp(-dt*1.4));
+  const em=m*m*(3-2*m);
+
+  tmx+=((mActive?mx/W-0.5:0)-tmx)*Math.min(1,dt*3);
+  tmy+=((mActive?my/H-0.5:0)-tmy)*Math.min(1,dt*3);
+  yaw+=dt*(0.16+0.1*(1-em));
+  const yw=yaw+tmx*1.1,pt=(0.95*(1-em)+0.14*em)+tmy*0.5;
+  const cy=Math.cos(yw),sy_=Math.sin(yw),cp=Math.cos(pt),sp=Math.sin(pt);
+  const breathe=1+0.012*Math.sin(t*1.1)*em;
+  const R2=R*R,RA=R*0.5;
+
+  for(let i=0;i<N;i++){
+    let k=(m-dl[i]*0.5)/0.5;k=k<0?0:k>1?1:k;const e=k*k*(3-2*k);
+    let x=gx[i]+(bx[i]-gx[i])*e,y=gy[i]+(by[i]-gy[i])*e,z=gz[i]+(bz[i]-gz[i])*e;
+    x*=breathe;y*=breathe;z*=breathe;
+    const x1=x*cy+z*sy_,z1=-x*sy_+z*cy;
+    const y2=y*cp-z1*sp,z2=y*sp+z1*cp;
+    const p=4/(4-z2);
+    const bxp=CX+x1*S*p,byp=CY-y2*S*p;
+    sd[i]=z2;pp[i]=p;
+    const ddx=bxp+ox[i]-mx,ddy=byp+oy[i]-my,d2=ddx*ddx+ddy*ddy;
+    if(d2<R2){
+      const d=Math.sqrt(d2)+0.001,f=1-d/R;
+      vx[i]+=ddx/d*f*f*0.45;vy[i]+=ddy/d*f*f*0.45;
+      if(i<NN&&d<RA)act[i]=Math.max(act[i],1-d/RA);
+    }
+    vx[i]*=0.88;vy[i]*=0.88;
+    ox[i]=(ox[i]+vx[i])*0.93;oy[i]=(oy[i]+vy[i])*0.93;
+    sx[i]=bxp+ox[i];sy[i]=byp+oy[i];
+  }
+
+  ambient-=dt;
+  if(ambient<0&&em>0.8){ambient=0.18+rnd()*0.35;act[(rnd()*NN)|0]=1;}
+  for(let i=0;i<NN;i++){
+    if(act[i]>0.55&&rnd()<dt*5)spawn(i,act[i]);
+    act[i]*=Math.exp(-dt*2.2);
+  }
+  for(let k=pulses.length-1;k>=0;k--){
+    const p=pulses[k];p.t+=dt*p.sp;
+    if(p.t>=1){
+      const to=ea[p.e]===p.from?eb[p.e]:ea[p.e];
+      if(act[to]<p.en)act[to]=p.en;
+      if(p.en>0.32){
+        if(rnd()<0.85)spawn(to,p.en*0.8);
+        if(rnd()<0.4)spawn(to,p.en*0.7);
+      }
+      pulses[k]=pulses[pulses.length-1];pulses.pop();
+    }
+  }
+
+  ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+  ctx.clearRect(0,0,W,H);
+  ctx.globalCompositeOperation='lighter';
+
+  if(em>0.02){
+    ctx.lineWidth=0.7;ctx.strokeStyle=`rgba(70,185,255,${0.13*em*em})`;
+    ctx.beginPath();
+    for(let e=0;e<NE;e++){ctx.moveTo(sx[ea[e]],sy[ea[e]]);ctx.lineTo(sx[eb[e]],sy[eb[e]]);}
+    ctx.stroke();
+    for(let e=0;e<NE;e++){
+      const a=ea[e],b=eb[e],v=act[a]>act[b]?act[a]:act[b];
+      if(v>0.12){
+        ctx.strokeStyle=`rgba(0,245,212,${v*0.75*em})`;ctx.lineWidth=1+v;
+        ctx.beginPath();ctx.moveTo(sx[a],sy[a]);ctx.lineTo(sx[b],sy[b]);ctx.stroke();
+      }
+    }
+  }
+
+  const pal=['#9fe8ff','#00f5d4','#4d93ff',m>0.5?'#8fe3ff':'#ffbf94'];
+  for(let c=0;c<4;c++){
+    ctx.fillStyle=pal[c];
+    for(let i=0;i<N;i++){
+      if(cls[i]!==c)continue;
+      const da=0.3+0.7*(sd[i]+1.3)/2.6,tw=0.7+0.3*Math.sin(t*1.6+ph[i]);
+      ctx.globalAlpha=Math.min(1,da*tw);
+      const s=(0.7+sz[i]*1.3)*pp[i];
+      ctx.fillRect(sx[i]-s/2,sy[i]-s/2,s,s);
+    }
+  }
+
+  for(let i=0;i<NN;i++){
+    const a=act[i],df=0.35+0.65*(sd[i]+1.3)/2.6;
+    const r=(4+(1-em)*5+a*16)*pp[i];
+    ctx.globalAlpha=Math.min(1,(0.26+a*0.9)*df);
+    ctx.drawImage(spr[cls[i]],sx[i]-r,sy[i]-r,r*2,r*2);
+  }
+
+  ctx.globalAlpha=1;
+  for(let k=0;k<pulses.length;k++){
+    const p=pulses[k],to=ea[p.e]===p.from?eb[p.e]:ea[p.e];
+    const x=sx[p.from]+(sx[to]-sx[p.from])*p.t,y=sy[p.from]+(sy[to]-sy[p.from])*p.t;
+    ctx.globalAlpha=Math.min(1,p.en+0.2);
+    ctx.drawImage(sprW,x-9,y-9,18,18);
+  }
+
+  ctx.globalCompositeOperation='source-over';
+  for(let k=ripples.length-1;k>=0;k--){
+    const r=ripples[k];r.r+=dt*420;r.a-=dt*1.4;
+    if(r.a<=0){ripples.splice(k,1);continue;}
+    ctx.globalAlpha=r.a*0.6;ctx.strokeStyle='#00f5d4';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,6.2832);ctx.stroke();
+  }
+  if(mActive){
+    ctx.globalAlpha=0.35;ctx.strokeStyle='#00f5d4';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(mx,my,14,0,6.2832);ctx.stroke();
+    ctx.globalAlpha=0.12;ctx.beginPath();ctx.arc(mx,my,R,0,6.2832);ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  statT-=dt;
+  if(statT<0){
+    statT=0.25;
+    statEl.textContent='NEURONAS   '+NN+'\nSINAPSIS   '+NE+'\nIMPULSOS   '+pulses.length+'\nMODO       '+(m>0.5?'CEREBRO':'GALAXIA');
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

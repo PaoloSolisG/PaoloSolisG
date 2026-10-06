@@ -1,96 +1,146 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=200&section=header&text=Paolo%20Solis&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Full-stack%20Developer%20%C2%B7%20SaaS%20Builder%20%C2%B7%20Per%C3%BA%20%F0%9F%87%B5%F0%9F%87%AA&descAlignY=60&descSize=18" alt="header" />
-
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=36BCF7&center=true&vCenter=true&width=600&lines=Construyo+SaaS+de+punta+a+punta;Laravel+%2B+Vue+3+%2B+Tailwind;Node.js+%2B+Fastify+%2B+TypeScript;Del+problema+al+producto+en+producci%C3%B3n" alt="Typing SVG" />
-</a>
+<img src="assets/brain.svg" alt="Paolo Solis — Neural Architecture" width="100%" />
 
 <br/>
 
-![Profile views](https://komarev.com/ghpvc/?username=paolosolisg&label=Visitas&color=0e75b6&style=flat-square)
-[![Website](https://img.shields.io/badge/Naniva-naniva.pe-0e75b6?style=flat-square&logo=googlechrome&logoColor=white)](https://naniva.pe)
+<a href="https://paolosolisg.github.io/paolosolisg/">
+  <img src="https://img.shields.io/badge/%E2%97%89%20ENTRAR%20AL%20CEREBRO%20INTERACTIVO-00f5d4?style=for-the-badge&labelColor=0d1117&color=0e4f8b" alt="Cerebro interactivo" />
+</a>
+
+<br/><br/>
+
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=20&duration=3000&pause=900&color=00F5D4&center=true&vCenter=true&width=820&height=45&lines=Arquitectura+desacoplada+%7C+Microservicios+%7C+Event-Driven;Dise%C3%B1o+servidores+que+escalan+y+no+se+caen;Del+diagrama+a+producci%C3%B3n.+Sin+excusas." alt="typing" />
+</a>
 
 </div>
 
 ---
 
-## 👨‍💻 Sobre mí
+## `> boot paolo.sys`
 
-Soy desarrollador **full-stack** en Perú. Diseño, construyo y opero productos SaaS completos: desde la base de datos y la API hasta la interfaz y el despliegue en servidores.
-
-- 🚀 Construyo y mantengo varios productos bajo la marca **[Naniva](https://naniva.pe)** (ERP, facturación electrónica, CRM, gestión de restaurantes)
-- 🧾 Experiencia con **facturación electrónica SUNAT (UBL 2.1)** y sistemas multiempresa / multisucursal
-- 🐳 Despliego y administro mi propia infraestructura con **Docker, Nginx y VPS**
-- 📚 Siempre aprendiendo e iterando rápido: prefiero lanzar, medir y mejorar
+<div align="center">
+  <img src="assets/terminal.svg" alt="Boot log" width="100%" />
+</div>
 
 ---
 
-## 🛠️ Stack
+## 🏗️ Cómo pienso la arquitectura
 
-**Backend**
+```mermaid
+flowchart LR
+    C([Clientes<br/>Web · Mobile · API]) --> E[Edge<br/>CDN · WAF · Nginx]
+    E --> G{API Gateway<br/>Auth · Rate limit · Routing}
 
-![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Fastify](https://img.shields.io/badge/Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+    G --> S1[Servicio<br/>Identidad]
+    G --> S2[Servicio<br/>Facturación]
+    G --> S3[Servicio<br/>Inventario]
+    G --> S4[Servicio<br/>Notificaciones]
 
-**Frontend**
+    S1 --> B[[Message Broker<br/>Colas · Eventos]]
+    S2 --> B
+    S3 --> B
+    S4 --> B
 
-![Vue.js](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white)
-![Inertia](https://img.shields.io/badge/Inertia.js-9553E9?style=for-the-badge&logo=inertia&logoColor=white)
-![PrimeVue](https://img.shields.io/badge/PrimeVue-41B883?style=for-the-badge&logo=primevue&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+    S1 --- D1[(PostgreSQL)]
+    S2 --- D2[(MySQL)]
+    S3 --- D3[(PostgreSQL)]
+    S4 --- D4[(Redis)]
 
-**Datos & DevOps**
+    B --> W[Workers<br/>Jobs · Procesos async]
 
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+    classDef core fill:#0e4f8b,stroke:#00f5d4,color:#fff;
+    classDef data fill:#0d1117,stroke:#00f5d4,color:#00f5d4;
+    class S1,S2,S3,S4,G,E,W core;
+    class D1,D2,D3,D4,B data;
+```
+
+| Principio | En la práctica |
+| --- | --- |
+| 🔌 **Desacoplamiento** | Cada servicio con su dominio, su base de datos y su ciclo de despliegue |
+| 📨 **Event-driven** | Comunicación asíncrona por eventos; los servicios no se esperan entre sí |
+| 🧱 **Clean / Hexagonal** | El dominio no depende del framework, de la base de datos ni de la UI |
+| 🏢 **Multi-tenant** | Aislamiento por empresa y sucursal, pensado desde el día uno |
+| 🔁 **Resiliencia** | Reintentos, colas, idempotencia y fallos que no se propagan en cascada |
+| 📈 **Escalabilidad** | Escalado horizontal, caché por capas y cuellos de botella medidos |
 
 ---
 
-## 🧩 Lo que construyo
+## 🖥️ Arquitectura de servidores
 
-| Producto | Qué es |
+```text
+┌──────────────────────────────────────────────────────────────┐
+│  INTERNET                                                    │
+│     │                                                        │
+│  [ DNS · CDN · WAF ]                                         │
+│     │                                                        │
+│  [ Reverse Proxy · Nginx / Nginx Proxy Manager · SSL ]       │
+│     │                                                        │
+│  ┌──┴─────────────── VPS / Linux ──────────────────────┐     │
+│  │  Docker · Compose · Redes aisladas                  │     │
+│  │  ├─ app containers   (PHP-FPM · Node · .NET · JVM)  │     │
+│  │  ├─ workers & queues (supervisor · schedulers)      │     │
+│  │  ├─ databases        (MySQL · PostgreSQL · Redis)   │     │
+│  │  └─ observabilidad   (logs · métricas · alertas)    │     │
+│  └─────────────────────────────────────────────────────┘     │
+│     │                                                        │
+│  [ Backups automáticos · Hardening · Firewall · Fail2ban ]   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚔️ Arsenal
+
+<div align="center">
+
+<img src="https://skillicons.dev/icons?i=java,cs,cpp,php,ts,js,py&theme=dark" alt="languages" /><br/>
+<img src="https://skillicons.dev/icons?i=dotnet,laravel,nodejs,fastify&theme=dark" alt="backend" /><br/>
+<img src="https://skillicons.dev/icons?i=vue,tailwind,html,css,vite&theme=dark" alt="frontend" /><br/>
+<img src="https://skillicons.dev/icons?i=postgres,mysql,redis&theme=dark" alt="data" /><br/>
+<img src="https://skillicons.dev/icons?i=linux,docker,nginx,git,github,githubactions&theme=dark" alt="devops" />
+
+</div>
+
+---
+
+## 🚀 Ecosistema Naniva
+
+| Producto | Descripción |
 | --- | --- |
 | 🏢 **Naniva ERP** | ERP multiempresa y multisucursal para pymes peruanas |
-| 🧾 **API de Facturación Electrónica** | Emisión de comprobantes compatibles con SUNAT (UBL 2.1) |
+| 🧾 **API de Facturación Electrónica** | Comprobantes SUNAT (UBL 2.1) como servicio independiente |
 | 💬 **WhatsApp CRM** | Atención y seguimiento de clientes por WhatsApp |
-| 🍽️ **Gestión de Restaurantes** | Pedidos, mesas y caja en un solo sistema |
+| 🍽️ **Restaurantes** | Pedidos, mesas, cocina y caja en un solo sistema |
+
+🌐 **[naniva.pe](https://naniva.pe)**
 
 ---
 
-## 📊 GitHub Stats
+## 📊 Métricas
 
 <div align="center">
 
-<img height="180" src="https://github-readme-stats.vercel.app/api?username=paolosolisg&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" alt="stats" />
-<img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=paolosolisg&layout=compact&theme=tokyonight&hide_border=true" alt="top langs" />
+<img height="175" src="https://github-readme-stats.vercel.app/api?username=paolosolisg&show_icons=true&theme=radical&hide_border=true&bg_color=0d1117&count_private=true" alt="stats" />
+<img height="175" src="https://github-readme-stats.vercel.app/api/top-langs/?username=paolosolisg&layout=compact&theme=radical&hide_border=true&bg_color=0d1117" alt="langs" />
 
-<img src="https://streak-stats.demolab.com?user=paolosolisg&theme=tokyonight&hide_border=true" alt="streak" />
+<img src="https://streak-stats.demolab.com?user=paolosolisg&theme=radical&hide_border=true&background=0d1117" alt="streak" />
 
 </div>
 
 ---
 
-## 🤝 Conectemos
+## 📡 Contacto
 
 <div align="center">
 
-[![Website](https://img.shields.io/badge/Web-naniva.pe-0e75b6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://naniva.pe)
-[![GitHub](https://img.shields.io/badge/GitHub-paolosolisg-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/paolosolisg)
+[![Web](https://img.shields.io/badge/WEB-naniva.pe-00f5d4?style=for-the-badge&logo=googlechrome&logoColor=0d1117&labelColor=0d1117)](https://naniva.pe)
+[![GitHub](https://img.shields.io/badge/GITHUB-paolosolisg-0e4f8b?style=for-the-badge&logo=github&logoColor=white&labelColor=0d1117)](https://github.com/paolosolisg)
 <!-- Descomenta y completa los que uses:
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/TU-USUARIO)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:TU-CORREO)
-[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/51TU-NUMERO)
+[![LinkedIn](https://img.shields.io/badge/LINKEDIN-conectar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=0d1117)](https://linkedin.com/in/TU-USUARIO)
+[![Email](https://img.shields.io/badge/EMAIL-escribeme-D14836?style=for-the-badge&logo=gmail&logoColor=white&labelColor=0d1117)](mailto:TU-CORREO)
+[![WhatsApp](https://img.shields.io/badge/WHATSAPP-hablemos-25D366?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=0d1117)](https://wa.me/51TU-NUMERO)
 -->
 
 </div>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=100&section=footer" alt="footer" width="100%" />
